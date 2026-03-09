@@ -17,13 +17,6 @@ struct SetEntryRowView: View {
     @State private var weight = ""
     @State private var reps = ""
 
-    @FocusState private var focusedField: Field?
-
-    private enum Field {
-        case weight
-        case reps
-    }
-
     private var existingSet: SetEntry? {
         exercise.sets.first { $0.setNumber == setNumber }
     }
@@ -52,12 +45,10 @@ struct SetEntryRowView: View {
                 TextField("Weight", text: $weight)
                     .keyboardType(.decimalPad)
                     .textFieldStyle(.roundedBorder)
-                    .focused($focusedField, equals: .weight)
 
                 TextField("Reps", text: $reps)
                     .keyboardType(.numberPad)
                     .textFieldStyle(.roundedBorder)
-                    .focused($focusedField, equals: .reps)
 
                 Button(hasSavedSet ? "Update" : "Save") {
                     saveSet()
@@ -78,14 +69,6 @@ struct SetEntryRowView: View {
         .cornerRadius(10)
         .onAppear {
             loadExistingValues()
-        }
-        .toolbar {
-            ToolbarItemGroup(placement: .keyboard) {
-                Spacer()
-                Button("Done") {
-                    focusedField = nil
-                }
-            }
         }
     }
 
@@ -125,7 +108,7 @@ struct SetEntryRowView: View {
         let generator = UINotificationFeedbackGenerator()
         generator.notificationOccurred(.success)
 
-        focusedField = nil
+        hideKeyboard()
     }
 
     private func formatWeight(_ value: Double) -> String {
@@ -133,5 +116,14 @@ struct SetEntryRowView: View {
             return String(Int(value))
         }
         return String(value)
+    }
+
+    private func hideKeyboard() {
+        UIApplication.shared.sendAction(
+            #selector(UIResponder.resignFirstResponder),
+            to: nil,
+            from: nil,
+            for: nil
+        )
     }
 }

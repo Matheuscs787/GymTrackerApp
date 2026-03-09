@@ -80,6 +80,13 @@ struct WorkoutSessionView: View {
                         dismiss()
                     }
                 }
+
+                ToolbarItemGroup(placement: .keyboard) {
+                    Spacer()
+                    Button("Done") {
+                        hideKeyboard()
+                    }
+                }
             }
         }
     }
@@ -113,5 +120,14 @@ struct WorkoutSessionView: View {
             return String(Int(value))
         }
         return String(value)
+    }
+
+    private func hideKeyboard() {
+        UIApplication.shared.sendAction(
+            #selector(UIResponder.resignFirstResponder),
+            to: nil,
+            from: nil,
+            for: nil
+        )
     }
 }
