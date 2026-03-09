@@ -67,4 +67,32 @@ final class ExerciseSession {
         self.workoutSession = workoutSession
         self.sets = sets
     }
+    
+    func previousSet(
+        for setNumber: Int,
+        excluding currentSession: WorkoutSession,
+        from sessions: [WorkoutSession]
+    ) -> SetEntry? {
+
+        let previousSessions = sessions
+            .filter { $0.id != currentSession.id }
+            .sorted { $0.performedAt > $1.performedAt }
+
+        for session in previousSessions {
+
+            if let matchingExercise = session.exerciseSessions.first(
+                where: { $0.exerciseTemplateId == self.exerciseTemplateId }
+            ) {
+
+                if let matchingSet = matchingExercise.sets
+                    .filter({ $0.setNumber == setNumber })
+                    .max(by: { $0.createdAt < $1.createdAt }) {
+
+                    return matchingSet
+                }
+            }
+        }
+
+        return nil
+    }
 }

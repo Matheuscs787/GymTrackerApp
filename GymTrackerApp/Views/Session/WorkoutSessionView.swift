@@ -29,7 +29,11 @@ struct WorkoutSessionView: View {
                             SetEntryRowView(
                                 exercise: exercise,
                                 setNumber: setNumber,
-                                previousSet: lastSavedSet(for: exercise, setNumber: setNumber)
+                                previousSet: exercise.previousSet(
+                                    for: setNumber,
+                                    excluding: session,
+                                    from: allSessions
+                                )
                             )
                         }
                     } header: {
@@ -69,31 +73,6 @@ struct WorkoutSessionView: View {
                 }
             }
         }
-    }
-
-    private func lastSavedSet(for currentExercise: ExerciseSession, setNumber: Int) -> SetEntry? {
-        let previousSessions = allSessions
-            .filter { $0.id != session.id }
-            .sorted { $0.performedAt > $1.performedAt }
-
-        for workoutSession in previousSessions {
-            let matchingExercise = workoutSession.exerciseSessions.first {
-                $0.exerciseTemplateId == currentExercise.exerciseTemplateId
-            }
-
-            if let matchingExercise {
-                let matchingSet = matchingExercise.sets
-                    .filter { $0.setNumber == setNumber }
-                    .sorted { $0.createdAt > $1.createdAt }
-                    .first
-
-                if let matchingSet {
-                    return matchingSet
-                }
-            }
-        }
-
-        return nil
     }
 
     private func hideKeyboard() {
