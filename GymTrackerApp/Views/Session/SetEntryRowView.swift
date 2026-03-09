@@ -65,8 +65,6 @@ struct SetEntryRowView: View {
         }
         .padding(.vertical, 8)
         .padding(.horizontal, 4)
-        .background(hasSavedSet ? Color.green.opacity(0.08) : Color.clear)
-        .cornerRadius(10)
         .onAppear {
             loadExistingValues()
         }

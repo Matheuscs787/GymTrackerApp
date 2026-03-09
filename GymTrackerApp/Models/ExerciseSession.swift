@@ -11,6 +11,7 @@ import SwiftData
 @Model
 final class ExerciseSession {
     var id: UUID
+    var exerciseTemplateId: UUID
     var exerciseName: String
     var order: Int
     var targetSets: Int
@@ -27,6 +28,7 @@ final class ExerciseSession {
 
     init(
         id: UUID = UUID(),
+        exerciseTemplateId: UUID,
         exerciseName: String,
         order: Int,
         targetSets: Int,
@@ -39,6 +41,7 @@ final class ExerciseSession {
         sets: [SetEntry] = []
     ) {
         self.id = id
+        self.exerciseTemplateId = exerciseTemplateId
         self.exerciseName = exerciseName
         self.order = order
         self.targetSets = targetSets

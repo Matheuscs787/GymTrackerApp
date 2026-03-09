@@ -45,10 +45,8 @@ struct WorkoutDetailView: View {
 
                     Section {
                         ForEach(sortedExercises) { exercise in
-                            Button {
-                                if editMode?.wrappedValue != .active {
-                                    editingExercise = exercise
-                                }
+                            NavigationLink {
+                                ExerciseDetailView(exercise: exercise)
                             } label: {
                                 VStack(alignment: .leading, spacing: 6) {
                                     Text(exercise.name)
@@ -76,9 +74,7 @@ struct WorkoutDetailView: View {
                                     }
                                 }
                                 .padding(.vertical, 4)
-                                .frame(maxWidth: .infinity, alignment: .leading)
                             }
-                            .buttonStyle(.plain)
                         }
                         .onDelete(perform: deleteExercise)
                         .onMove(perform: moveExercise)
@@ -123,6 +119,7 @@ struct WorkoutDetailView: View {
 
         for exercise in sortedExercises {
             let exerciseSession = ExerciseSession(
+                exerciseTemplateId: exercise.id,
                 exerciseName: exercise.name,
                 order: exercise.order,
                 targetSets: exercise.targetSets,
