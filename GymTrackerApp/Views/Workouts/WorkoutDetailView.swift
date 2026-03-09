@@ -10,6 +10,7 @@ import SwiftData
 
 struct WorkoutDetailView: View {
     @Environment(\.modelContext) private var context
+    @Environment(\.editMode) private var editMode
 
     @Bindable var workout: WorkoutTemplate
     @State private var showingCreateExercise = false
@@ -42,46 +43,57 @@ struct WorkoutDetailView: View {
                         }
                     }
 
-                    ForEach(sortedExercises) { exercise in
-                        Button {
-                            editingExercise = exercise
-                        } label: {
-                            VStack(alignment: .leading, spacing: 6) {
-                                Text(exercise.name)
-                                    .font(.headline)
-                                    .foregroundStyle(.primary)
+                    Section {
+                        ForEach(sortedExercises) { exercise in
+                            Button {
+                                if editMode?.wrappedValue != .active {
+                                    editingExercise = exercise
+                                }
+                            } label: {
+                                VStack(alignment: .leading, spacing: 6) {
+                                    Text(exercise.name)
+                                        .font(.headline)
+                                        .foregroundStyle(.primary)
 
-                                HStack(spacing: 12) {
-                                    Text("\(exercise.targetSets) sets")
+                                    HStack(spacing: 12) {
+                                        Text("\(exercise.targetSets) sets")
 
-                                    if exercise.toFailure {
-                                        Text("To failure")
-                                    } else if let reps = exercise.targetReps {
-                                        Text("\(reps) reps")
+                                        if exercise.toFailure {
+                                            Text("To failure")
+                                        } else if let reps = exercise.targetReps {
+                                            Text("\(reps) reps")
+                                        }
+
+                                        Text("Rest \(exercise.restSeconds)s")
                                     }
+                                    .font(.subheadline)
+                                    .foregroundStyle(.secondary)
 
-                                    Text("Rest \(exercise.restSeconds)s")
+                                    if let notes = exercise.notes {
+                                        Text(notes)
+                                            .font(.caption)
+                                            .foregroundStyle(.secondary)
+                                    }
                                 }
-                                .font(.subheadline)
-                                .foregroundStyle(.secondary)
-
-                                if let notes = exercise.notes {
-                                    Text(notes)
-                                        .font(.caption)
-                                        .foregroundStyle(.secondary)
-                                }
+                                .padding(.vertical, 4)
+                                .frame(maxWidth: .infinity, alignment: .leading)
                             }
-                            .padding(.vertical, 4)
-                            .frame(maxWidth: .infinity, alignment: .leading)
+                            .buttonStyle(.plain)
                         }
-                        .buttonStyle(.plain)
+                        .onDelete(perform: deleteExercise)
+                        .onMove(perform: moveExercise)
                     }
-                    .onDelete(perform: deleteExercise)
                 }
             }
         }
         .navigationTitle(workout.name)
         .toolbar {
+            ToolbarItem(placement: .topBarLeading) {
+                if !sortedExercises.isEmpty {
+                    EditButton()
+                }
+            }
+
             ToolbarItem(placement: .topBarTrailing) {
                 Button {
                     showingCreateExercise = true
@@ -136,6 +148,15 @@ struct WorkoutDetailView: View {
         }
 
         reorderExercises()
+    }
+
+    private func moveExercise(from source: IndexSet, to destination: Int) {
+        var reordered = sortedExercises
+        reordered.move(fromOffsets: source, toOffset: destination)
+
+        for (index, exercise) in reordered.enumerated() {
+            exercise.order = index
+        }
     }
 
     private func reorderExercises() {
