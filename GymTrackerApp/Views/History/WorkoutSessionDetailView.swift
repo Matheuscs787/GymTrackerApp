@@ -40,7 +40,7 @@ struct WorkoutSessionDetailView: View {
                     } else {
                         ForEach(exercise.sets.sorted { $0.setNumber < $1.setNumber }) { set in
                             HStack {
-                                Text("Set \(set.setNumber)")
+                                Text(set.setNumber.formattedSetNumber)
 
                                 Spacer()
 
@@ -55,7 +55,7 @@ struct WorkoutSessionDetailView: View {
                             .font(.headline)
 
                         HStack(spacing: 12) {
-                            Text("\(exercise.targetSets) sets")
+                            Text(exercise.targetSets.formattedSets)
 
                             if exercise.toFailure {
                                 Text("To failure")

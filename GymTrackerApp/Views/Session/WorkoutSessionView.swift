@@ -38,7 +38,7 @@ struct WorkoutSessionView: View {
                                 .font(.headline)
 
                             HStack(spacing: 12) {
-                                Text("\(exercise.targetSets) sets")
+                                Text(exercise.targetSets.formattedSets)
 
                                 if exercise.toFailure {
                                     Text("To failure")

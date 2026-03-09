@@ -62,7 +62,7 @@ struct ExerciseHistoryContentView: View {
                     } else {
                         ForEach(sortedSets) { set in
                             HStack {
-                                Text("Set \(set.setNumber)")
+                                Text(set.setNumber.formattedSetNumber)
                                 Spacer()
                                 Text("\(set.weight.formattedWeight) kg × \(set.reps)")
                                     .foregroundStyle(.secondary)

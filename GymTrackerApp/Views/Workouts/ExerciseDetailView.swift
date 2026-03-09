@@ -20,15 +20,15 @@ struct ExerciseDetailView: View {
                         .font(.headline)
 
                     HStack(spacing: 12) {
-                        Text("\(exercise.targetSets) sets")
+                        Text(exercise.targetSets.formattedSets)
 
                         if exercise.toFailure {
                             Text("To failure")
                         } else if let reps = exercise.targetReps {
-                            Text("\(reps) reps")
+                            Text(reps.formattedReps)
                         }
 
-                        Text("Rest \(exercise.restSeconds)s")
+                        Text(exercise.restSeconds.formattedRest)
                     }
                     .font(.subheadline)
                     .foregroundStyle(.secondary)
