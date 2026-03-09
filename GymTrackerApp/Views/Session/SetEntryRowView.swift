@@ -36,8 +36,7 @@ struct SetEntryRowView: View {
                 Spacer()
 
                 if hasSavedSet {
-                    Label("Saved", systemImage: "checkmark.circle.fill")
-                        .font(.caption)
+                    Image(systemName: "checkmark.circle.fill")
                         .foregroundStyle(.green)
                 }
             }
