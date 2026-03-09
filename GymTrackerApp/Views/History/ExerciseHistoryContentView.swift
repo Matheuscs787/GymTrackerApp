@@ -64,7 +64,7 @@ struct ExerciseHistoryContentView: View {
                             HStack {
                                 Text("Set \(set.setNumber)")
                                 Spacer()
-                                Text("\(formatWeight(set.weight)) kg × \(set.reps)")
+                                Text("\(set.weight.formattedWeight) kg × \(set.reps)")
                                     .foregroundStyle(.secondary)
                             }
                         }
@@ -73,12 +73,5 @@ struct ExerciseHistoryContentView: View {
                 .padding(.vertical, 6)
             }
         }
-    }
-
-    private func formatWeight(_ value: Double) -> String {
-        if value == floor(value) {
-            return String(Int(value))
-        }
-        return String(value)
     }
 }

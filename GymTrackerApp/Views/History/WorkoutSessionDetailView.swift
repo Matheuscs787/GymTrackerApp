@@ -44,7 +44,7 @@ struct WorkoutSessionDetailView: View {
 
                                 Spacer()
 
-                                Text("\(formatWeight(set.weight)) kg × \(set.reps)")
+                                Text("\(set.weight.formattedWeight) kg × \(set.reps)")
                                     .foregroundStyle(.secondary)
                             }
                         }
@@ -80,12 +80,5 @@ struct WorkoutSessionDetailView: View {
         }
         .navigationTitle("Session")
         .navigationBarTitleDisplayMode(.inline)
-    }
-
-    private func formatWeight(_ value: Double) -> String {
-        if value == floor(value) {
-            return String(Int(value))
-        }
-        return String(value)
     }
 }

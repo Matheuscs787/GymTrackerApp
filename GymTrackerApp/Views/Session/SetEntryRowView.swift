@@ -42,7 +42,7 @@ struct SetEntryRowView: View {
             }
 
             if let previousSet {
-                Text("Last time: \(formatWeight(previousSet.weight)) kg × \(previousSet.reps)")
+                Text("Last time: \(previousSet.weight.formattedWeight) kg × \(previousSet.reps)")
                     .font(.caption)
                     .foregroundStyle(.secondary)
             }
@@ -78,7 +78,7 @@ struct SetEntryRowView: View {
 
     private func loadExistingValues() {
         guard let existingSet else { return }
-        weight = formatWeight(existingSet.weight)
+        weight = existingSet.weight.formattedWeight
         reps = "\(existingSet.reps)"
     }
 
@@ -107,13 +107,6 @@ struct SetEntryRowView: View {
         generator.notificationOccurred(.success)
 
         hideKeyboard()
-    }
-
-    private func formatWeight(_ value: Double) -> String {
-        if value == floor(value) {
-            return String(Int(value))
-        }
-        return String(value)
     }
 
     private func hideKeyboard() {
