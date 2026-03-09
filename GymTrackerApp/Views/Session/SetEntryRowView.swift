@@ -13,6 +13,7 @@ struct SetEntryRowView: View {
 
     let exercise: ExerciseSession
     let setNumber: Int
+    let previousSet: SetEntry?
 
     @State private var weight = ""
     @State private var reps = ""
@@ -41,6 +42,12 @@ struct SetEntryRowView: View {
                 }
             }
 
+            if let previousSet {
+                Text("Last time: \(formatWeight(previousSet.weight)) kg × \(previousSet.reps)")
+                    .font(.caption)
+                    .foregroundStyle(.secondary)
+            }
+
             HStack(spacing: 12) {
                 TextField("Weight", text: $weight)
                     .keyboardType(.decimalPad)
@@ -55,12 +62,6 @@ struct SetEntryRowView: View {
                 }
                 .buttonStyle(.borderedProminent)
                 .disabled(!canSave)
-            }
-
-            if let existingSet {
-                Text("Saved: \(formatWeight(existingSet.weight)) kg × \(existingSet.reps)")
-                    .font(.caption)
-                    .foregroundStyle(.secondary)
             }
         }
         .padding(.vertical, 8)

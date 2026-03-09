@@ -9,7 +9,6 @@ import SwiftUI
 import SwiftData
 
 struct WorkoutSessionView: View {
-    @Environment(\.modelContext) private var context
     @Environment(\.dismiss) private var dismiss
 
     @Bindable var session: WorkoutSession
@@ -29,7 +28,8 @@ struct WorkoutSessionView: View {
                         ForEach(1...exercise.targetSets, id: \.self) { setNumber in
                             SetEntryRowView(
                                 exercise: exercise,
-                                setNumber: setNumber
+                                setNumber: setNumber,
+                                previousSet: lastSavedSet(for: exercise, setNumber: setNumber)
                             )
                         }
                     } header: {
@@ -50,16 +50,6 @@ struct WorkoutSessionView: View {
                             }
                             .font(.subheadline)
                             .foregroundStyle(.secondary)
-
-                            if let lastSet = lastSavedSet(for: exercise) {
-                                Text("Last time: \(formatWeight(lastSet.weight)) kg × \(lastSet.reps)")
-                                    .font(.caption)
-                                    .foregroundStyle(.blue)
-                            } else {
-                                Text("No previous data")
-                                    .font(.caption)
-                                    .foregroundStyle(.secondary)
-                            }
 
                             if let notes = exercise.notes {
                                 Text(notes)
@@ -91,35 +81,29 @@ struct WorkoutSessionView: View {
         }
     }
 
-    private func lastSavedSet(for currentExercise: ExerciseSession) -> SetEntry? {
+    private func lastSavedSet(for currentExercise: ExerciseSession, setNumber: Int) -> SetEntry? {
         let previousSessions = allSessions
             .filter { $0.id != session.id }
             .sorted { $0.performedAt > $1.performedAt }
 
         for workoutSession in previousSessions {
-            let matchingExercises = workoutSession.exerciseSessions
-                .filter { $0.exerciseName == currentExercise.exerciseName }
-                .sorted { $0.createdAt > $1.createdAt }
+            let matchingExercise = workoutSession.exerciseSessions.first {
+                $0.exerciseTemplateId == currentExercise.exerciseTemplateId
+            }
 
-            for exercise in matchingExercises {
-                let latestSet = exercise.sets
+            if let matchingExercise {
+                let matchingSet = matchingExercise.sets
+                    .filter { $0.setNumber == setNumber }
                     .sorted { $0.createdAt > $1.createdAt }
                     .first
 
-                if let latestSet {
-                    return latestSet
+                if let matchingSet {
+                    return matchingSet
                 }
             }
         }
 
         return nil
-    }
-
-    private func formatWeight(_ value: Double) -> String {
-        if value == floor(value) {
-            return String(Int(value))
-        }
-        return String(value)
     }
 
     private func hideKeyboard() {
