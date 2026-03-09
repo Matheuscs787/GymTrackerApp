@@ -25,6 +25,20 @@ final class ExerciseSession {
 
     @Relationship(deleteRule: .cascade, inverse: \SetEntry.exerciseSession)
     var sets: [SetEntry]
+    
+    var prescriptionSummary: String {
+        var parts: [String] = [targetSets.formattedSets]
+
+        if toFailure {
+            parts.append("To failure")
+        } else if let targetReps {
+            parts.append(targetReps.formattedReps)
+        }
+
+        parts.append(restSeconds.formattedRest)
+
+        return parts.joined(separator: " • ")
+    }
 
     init(
         id: UUID = UUID(),

@@ -21,6 +21,20 @@ final class ExerciseTemplate {
     var createdAt: Date
 
     var workoutTemplate: WorkoutTemplate?
+    
+    var prescriptionSummary: String {
+        var parts: [String] = [targetSets.formattedSets]
+
+        if toFailure {
+            parts.append("To failure")
+        } else if let targetReps {
+            parts.append(targetReps.formattedReps)
+        }
+
+        parts.append(restSeconds.formattedRest)
+
+        return parts.joined(separator: " • ")
+    }
 
     init(
         id: UUID = UUID(),

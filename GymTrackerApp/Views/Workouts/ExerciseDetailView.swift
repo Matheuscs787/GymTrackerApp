@@ -19,21 +19,11 @@ struct ExerciseDetailView: View {
                     Text(exercise.name)
                         .font(.headline)
 
-                    HStack(spacing: 12) {
-                        Text(exercise.targetSets.formattedSets)
+                    Text(exercise.prescriptionSummary)
+                        .font(.subheadline)
+                        .foregroundStyle(.secondary)
 
-                        if exercise.toFailure {
-                            Text("To failure")
-                        } else if let reps = exercise.targetReps {
-                            Text(reps.formattedReps)
-                        }
-
-                        Text(exercise.restSeconds.formattedRest)
-                    }
-                    .font(.subheadline)
-                    .foregroundStyle(.secondary)
-
-                    if let notes = exercise.notes {
+                    if let notes = exercise.notes, !notes.isEmpty {
                         Text(notes)
                             .font(.caption)
                             .foregroundStyle(.secondary)

@@ -37,21 +37,11 @@ struct WorkoutSessionView: View {
                             Text(exercise.exerciseName)
                                 .font(.headline)
 
-                            HStack(spacing: 12) {
-                                Text(exercise.targetSets.formattedSets)
+                            Text(exercise.prescriptionSummary)
+                                .font(.subheadline)
+                                .foregroundStyle(.secondary)
 
-                                if exercise.toFailure {
-                                    Text("To failure")
-                                } else if let reps = exercise.targetReps {
-                                    Text("Target: \(reps) reps")
-                                }
-
-                                Text("Rest: \(exercise.restSeconds)s")
-                            }
-                            .font(.subheadline)
-                            .foregroundStyle(.secondary)
-
-                            if let notes = exercise.notes {
+                            if let notes = exercise.notes, !notes.isEmpty {
                                 Text(notes)
                                     .font(.caption)
                                     .foregroundStyle(.secondary)
