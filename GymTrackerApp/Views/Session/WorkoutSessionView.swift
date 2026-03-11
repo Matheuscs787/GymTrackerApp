@@ -24,16 +24,17 @@ struct WorkoutSessionView: View {
         NavigationStack {
             List {
                 ForEach(sortedExercises) { exercise in
+                    let previousSets = exercise.previousSets(
+                        excluding: session,
+                        from: allSessions
+                    )
+
                     Section {
                         ForEach(1...exercise.targetSets, id: \.self) { setNumber in
                             SetEntryRowView(
                                 exercise: exercise,
                                 setNumber: setNumber,
-                                previousSet: exercise.previousSet(
-                                    for: setNumber,
-                                    excluding: session,
-                                    from: allSessions
-                                )
+                                previousSet: previousSets[setNumber]
                             )
                         }
                     } header: {

@@ -25,7 +25,7 @@ final class ExerciseSession {
 
     @Relationship(deleteRule: .cascade, inverse: \SetEntry.exerciseSession)
     var sets: [SetEntry]
-    
+
     var prescriptionSummary: String {
         var parts: [String] = [targetSets.formattedSets]
 
@@ -67,32 +67,37 @@ final class ExerciseSession {
         self.workoutSession = workoutSession
         self.sets = sets
     }
-    
-    func previousSet(
-        for setNumber: Int,
+
+    func previousSets(
         excluding currentSession: WorkoutSession,
         from sessions: [WorkoutSession]
-    ) -> SetEntry? {
-
+    ) -> [Int: SetEntry] {
         let previousSessions = sessions
             .filter { $0.id != currentSession.id }
             .sorted { $0.performedAt > $1.performedAt }
 
+        var result: [Int: SetEntry] = [:]
+
         for session in previousSessions {
+            guard let matchingExercise = session.exerciseSessions.first(
+                where: { $0.exerciseTemplateId == exerciseTemplateId }
+            ) else {
+                continue
+            }
 
-            if let matchingExercise = session.exerciseSessions.first(
-                where: { $0.exerciseTemplateId == self.exerciseTemplateId }
-            ) {
+            let sortedSets = matchingExercise.sets.sorted { $0.createdAt > $1.createdAt }
 
-                if let matchingSet = matchingExercise.sets
-                    .filter({ $0.setNumber == setNumber })
-                    .max(by: { $0.createdAt < $1.createdAt }) {
-
-                    return matchingSet
+            for set in sortedSets {
+                if result[set.setNumber] == nil {
+                    result[set.setNumber] = set
                 }
+            }
+
+            if result.count >= targetSets {
+                break
             }
         }
 
-        return nil
+        return result
     }
 }
